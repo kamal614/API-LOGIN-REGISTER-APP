@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:get/get_core/src/get_main.dart';
+import 'package:get/get_navigation/src/extension_navigation.dart';
+import 'package:loginui/Screens/login.dart';
 import 'package:loginui/validator/validators.dart';
 
-class login extends StatelessWidget {
+class Register extends StatelessWidget {
   final _formKey = GlobalKey<FormState>();
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -64,7 +66,7 @@ class login extends StatelessWidget {
                             margin: EdgeInsets.only(top: 5),
                             child: Center(
                               child: Text(
-                                "Login",
+                                "Register",
                                 style: TextStyle(
                                     color: Colors.white,
                                     fontSize: 40,
@@ -98,6 +100,27 @@ class login extends StatelessWidget {
                                   border: Border(
                                       bottom: BorderSide(color: Colors.grey))),
                               child: TextFormField(
+                                validator: (value) {
+                                  if (value == null || value.isEmpty) {
+                                    return 'Please enter Name';
+                                  } else if (value.length < 2) {
+                                    return 'Length of name should be minimum 3';
+                                  }
+                                  return null;
+                                },
+                                decoration: InputDecoration(
+                                  border: InputBorder.none,
+                                  hintText: 'Enter Name',
+                                  hintStyle: TextStyle(color: Colors.grey[400]),
+                                ),
+                              ),
+                            ),
+                            Container(
+                              padding: EdgeInsets.all(8.0),
+                              decoration: BoxDecoration(
+                                  border: Border(
+                                      bottom: BorderSide(color: Colors.grey))),
+                              child: TextFormField(
                                 validator: (value) =>
                                     validateEmail(value.toString()),
                                 decoration: InputDecoration(
@@ -113,9 +136,9 @@ class login extends StatelessWidget {
                                   border: Border(
                                       bottom: BorderSide(color: Colors.grey))),
                               child: TextFormField(
-                                obscureText: true,
                                 validator: (value) =>
                                     validatePassword(value.toString()),
+                                obscureText: true,
                                 decoration: InputDecoration(
                                   border: InputBorder.none,
                                   focusedBorder: InputBorder.none,
@@ -141,8 +164,8 @@ class login extends StatelessWidget {
                             // you'd often call a server or save the information in a database.
                             ScaffoldMessenger.of(context).showSnackBar(
                               const SnackBar(
-                                  content:
-                                      Text('Login in process, Please wait')),
+                                  content: Text(
+                                      'Registration in process, Please wait')),
                             );
                           }
                         },
@@ -159,7 +182,7 @@ class login extends StatelessWidget {
                           ),
                           child: Center(
                             child: Text(
-                              "Login",
+                              "Register",
                               style: TextStyle(
                                   color: Colors.white,
                                   fontWeight: FontWeight.bold,
@@ -169,12 +192,17 @@ class login extends StatelessWidget {
                         ),
                       ),
                       SizedBox(
-                        height: 40.0,
+                        height: 20.0,
                       ),
-                      Text(
-                        "Forgot Password ?",
-                        style: TextStyle(
-                          color: Color.fromRGBO(143, 148, 251, 1),
+                      InkWell(
+                        onTap: () {
+                          Get.to(login());
+                        },
+                        child: Text(
+                          "Already have an account, SIGN IN",
+                          style: TextStyle(
+                            color: Color.fromRGBO(143, 148, 251, 1),
+                          ),
                         ),
                       ),
                     ],
