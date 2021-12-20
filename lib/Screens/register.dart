@@ -3,9 +3,34 @@ import 'package:get/get_core/src/get_main.dart';
 import 'package:get/get_navigation/src/extension_navigation.dart';
 import 'package:loginui/Screens/login.dart';
 import 'package:loginui/validator/validators.dart';
+import 'package:http/http.dart';
 
 class Register extends StatelessWidget {
   final _formKey = GlobalKey<FormState>();
+  TextEditingController nameController = TextEditingController();
+  TextEditingController emailController = TextEditingController();
+  TextEditingController passwordController = TextEditingController();
+
+  void register(String name, String email, String password) async {
+    print('kamal');
+    print(email);
+    print(password);
+    try {
+      Response response = await post(
+          Uri.parse(
+              'http://restapi.adequateshop.com/api/authaccount/registration'),
+          body: {"name": name, "email": email, "password": password});
+
+      if (response.statusCode == 200) {
+        print("success");
+      } else {
+        print("failed");
+      }
+    } catch (e) {
+      print(e.toString());
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -100,6 +125,7 @@ class Register extends StatelessWidget {
                                   border: Border(
                                       bottom: BorderSide(color: Colors.grey))),
                               child: TextFormField(
+                                controller: nameController,
                                 validator: (value) {
                                   if (value == null || value.isEmpty) {
                                     return 'Please enter Name';
@@ -121,6 +147,7 @@ class Register extends StatelessWidget {
                                   border: Border(
                                       bottom: BorderSide(color: Colors.grey))),
                               child: TextFormField(
+                                controller: emailController,
                                 validator: (value) =>
                                     validateEmail(value.toString()),
                                 decoration: InputDecoration(
@@ -136,6 +163,7 @@ class Register extends StatelessWidget {
                                   border: Border(
                                       bottom: BorderSide(color: Colors.grey))),
                               child: TextFormField(
+                                controller: passwordController,
                                 validator: (value) =>
                                     validatePassword(value.toString()),
                                 obscureText: true,
@@ -160,8 +188,12 @@ class Register extends StatelessWidget {
                       InkWell(
                         onTap: () {
                           if (_formKey.currentState!.validate()) {
-                            // If the form is valid, display a snackbar. In the real world,
-                            // you'd often call a server or save the information in a database.
+                            register(
+                                nameController.text.toString(),
+                                emailController.text.toString(),
+                                passwordController.text.toString());
+                            print('kumar');
+                            print(nameController.text.toString());
                             ScaffoldMessenger.of(context).showSnackBar(
                               const SnackBar(
                                   content: Text(
