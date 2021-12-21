@@ -1,8 +1,47 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:get/get_core/src/get_main.dart';
+import 'package:get/get_navigation/src/extension_navigation.dart';
+import 'package:http/http.dart';
+import 'package:loginui/Screens/home_screen.dart';
 import 'package:loginui/validator/validators.dart';
 
-class login extends StatelessWidget {
+class login extends StatefulWidget {
+  @override
+  State<login> createState() => _loginState();
+}
+
+class _loginState extends State<login> {
   final _formKey = GlobalKey<FormState>();
+
+  TextEditingController emailcontroller = TextEditingController();
+
+  TextEditingController passwordcontroller = TextEditingController();
+
+  Future<dynamic> dologin(String email, String password) async {
+    try {
+      Response response = await post(
+          Uri.parse('http://restapi.adequateshop.com/api/authaccount/login'),
+          body: {"email": email, "password": password}).then((value) {
+        var data = jsonDecode(value.body.toString());
+        print(data);
+        print(data['message']);
+        if (data['message'] == 'success') {
+          Get.offAll(HomeScreen());
+        }
+        return value;
+      });
+      var data = jsonDecode(response.body.toString());
+      print(data);
+      print(data['message']);
+      if (data['message'] == 'success') {
+        Get.offAll(HomeScreen());
+      }
+    } catch (e) {
+      print(e);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -98,6 +137,7 @@ class login extends StatelessWidget {
                                   border: Border(
                                       bottom: BorderSide(color: Colors.grey))),
                               child: TextFormField(
+                                controller: emailcontroller,
                                 validator: (value) =>
                                     validateEmail(value.toString()),
                                 decoration: InputDecoration(
@@ -113,6 +153,7 @@ class login extends StatelessWidget {
                                   border: Border(
                                       bottom: BorderSide(color: Colors.grey))),
                               child: TextFormField(
+                                controller: passwordcontroller,
                                 obscureText: true,
                                 validator: (value) =>
                                     validatePassword(value.toString()),
@@ -137,13 +178,8 @@ class login extends StatelessWidget {
                       InkWell(
                         onTap: () {
                           if (_formKey.currentState!.validate()) {
-                            // If the form is valid, display a snackbar. In the real world,
-                            // you'd often call a server or save the information in a database.
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(
-                                  content:
-                                      Text('Login in process, Please wait')),
-                            );
+                            dologin(emailcontroller.text.toString(),
+                                passwordcontroller.text.toString());
                           }
                         },
                         child: Container(

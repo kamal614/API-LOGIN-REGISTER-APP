@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:get/get_navigation/src/extension_navigation.dart';
@@ -11,21 +13,34 @@ class Register extends StatelessWidget {
   TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
 
-  void register(String name, String email, String password) async {
-    print('kamal');
-    print(email);
-    print(password);
+  Future<dynamic> register(String name, String email, String password) async {
     try {
-      Response response = await post(
+      await post(
           Uri.parse(
               'http://restapi.adequateshop.com/api/authaccount/registration'),
-          body: {"name": name, "email": email, "password": password});
+          body: {
+            "name": name,
+            "email": email,
+            "password": password
+          }).then((value) {
+        var data = jsonDecode(value.body.toString());
+        print(data);
+        if (value.statusCode == 200 && data['message'] == 'success') {
+          print("success");
+          Get.snackbar(
+            "Success",
+            "User Sucessfully registered",
+          );
 
-      if (response.statusCode == 200) {
-        print("success");
-      } else {
-        print("failed");
-      }
+          Get.offAll(login);
+        } else {
+          Get.snackbar(
+            "Failed",
+            data['message'],
+          );
+        }
+        return value;
+      });
     } catch (e) {
       print(e.toString());
     }
@@ -192,13 +207,6 @@ class Register extends StatelessWidget {
                                 nameController.text.toString(),
                                 emailController.text.toString(),
                                 passwordController.text.toString());
-                            print('kumar');
-                            print(nameController.text.toString());
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(
-                                  content: Text(
-                                      'Registration in process, Please wait')),
-                            );
                           }
                         },
                         child: Container(

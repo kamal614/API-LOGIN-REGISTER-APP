@@ -12,12 +12,12 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  late SharedPreferences sharedPreferences;
-  @override
-  void initState() async {
-    super.initState();
-    sharedPreferences = await SharedPreferences.getInstance();
-  }
+  // late SharedPreferences sharedPreferences;
+  // @override
+  // void initState() async {
+  //   super.initState();
+  //   sharedPreferences = await SharedPreferences.getInstance();
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -32,7 +32,7 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
           ElevatedButton.icon(
               onPressed: () {
-                sharedPreferences.clear();
+                // sharedPreferences.clear();
                 // sharedPreferences.commit();
                 Get.offAll(login());
               },
